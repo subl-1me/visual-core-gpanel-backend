@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/subl-1me/visual-core-gpanel-backend/issues"
   },
-  "homepage": "https://github.com/subl-1me/visual-core-gpanel-backend#readme"
+  "homepage": "https://github.com/subl-1me/visual-core-gpanel-backend#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "nodemon-ts": "^1.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
 }
