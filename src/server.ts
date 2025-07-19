@@ -12,7 +12,11 @@ import { PORT, TEST_URL } from "./config";
 
 export default class Server {
   static start() {
-    app.listen(PORT, () => {
+    app.listen(PORT, (err) => {
+      if (err) {
+        throw new Error(`Failed to start server: ${err.message}`);
+      }
+
       console.log(`Server is running on ${TEST_URL}`);
     });
   }

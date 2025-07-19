@@ -6,8 +6,16 @@ function main(args?: string[]): void {
   try {
     Server.start();
   } catch (error) {
-    console.error("Failed to start server:", error);
+    console.error(error);
   }
+
+  //TODO: Try again
+
+  // handle process exit
+  process.on("SIGINT", () => {
+    console.log("Shutting down server...");
+    process.exit(0);
+  });
 }
 
 main();
