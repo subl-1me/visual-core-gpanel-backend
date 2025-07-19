@@ -2,23 +2,34 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 const app = express();
+import { chooseDatabase } from "./database";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 
-import { PORT, TEST_URL } from "./config";
+import { PORT, TEST_URL, ENV } from "./config";
 
 export default class Server {
   static start() {
-    app.listen(PORT, (err) => {
-      if (err) {
-        throw new Error(`Failed to start server: ${err.message}`);
-      }
+    try {
+      app.listen(PORT, (err) => {
+        if (err) {
+          throw new Error(`Failed to start server: ${err.message}`);
+        }
 
-      console.log(`Server is running on ${TEST_URL}`);
-    });
+        console.log(`Server is running on ${TEST_URL}.`);
+        console.log(`Initializing database... Current: ${ENV}`);
+        chooseDatabase();
+      });
+    } catch (error) {
+      throw new Error(
+        `Error starting server: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
   }
 
   static getApp() {
