@@ -1,0 +1,19 @@
+{
+  "name": "visual-core-gpanel-backend",
+  "version": "1.0.0",
+  "description": "A modern panel for managing Visual Core (backend)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/subl-1me/visual-core-gpanel-backend.git"
+  },
+  "author": "Julio Ugalde",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/subl-1me/visual-core-gpanel-backend/issues"
+  },
+  "homepage": "https://github.com/subl-1me/visual-core-gpanel-backend#readme"
+}
