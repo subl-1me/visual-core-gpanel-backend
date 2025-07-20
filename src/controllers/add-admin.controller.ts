@@ -37,3 +37,8 @@ export const insert = async (req: Request, res: Response) => {
     });
   });
 };
+
+export const items = async (_req: Request, res: Response) => {
+  const items = await adminService.items();
+  return res.send({ error: false, items });
+};

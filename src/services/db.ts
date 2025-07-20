@@ -22,3 +22,12 @@ export const insert = async (user: any) => {
 
   //TODO: Use prod db
 };
+
+export const items = async () => {
+  if (ENV === "development") {
+    const db = chooseDatabase();
+    const stmt = db.prepare(`SELECT * FROM admin`);
+    const items = stmt.all();
+    return items;
+  }
+};
