@@ -31,3 +31,15 @@ export const items = async () => {
     return items;
   }
 };
+
+export const item = async (id: string = "", username: string = "") => {
+  if (ENV === "development") {
+    const db = chooseDatabase();
+    const stmt =
+      id !== ""
+        ? db.prepare(`SELECT * FROM admin WHERE id = ?`)
+        : db.prepare(`SELECT * FROM admin WHERE username = ?`);
+    const item = stmt.get(id !== "" ? id : username);
+    return item;
+  }
+};

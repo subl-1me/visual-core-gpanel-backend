@@ -4,12 +4,14 @@ import helmet from "helmet";
 const app = express();
 import { chooseDatabase } from "./database";
 import adminRouter from "./routes/add.admin.routes";
+import loginRouter from "./routes/login.routes";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use("/api/adm", adminRouter);
+app.use("/api/login", loginRouter);
 
 import { PORT, TEST_URL, ENV } from "./config";
 
