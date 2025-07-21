@@ -21,15 +21,31 @@ export const chooseDatabase = () => {
       ).run();
 
       db.prepare(
+        `CREATE TABLE IF NOT EXISTS stock (
+            pos INTEGER PRIMARY KEY AUTOINCREMENT,
+            id TEXT NOT NULL UNIQUE,
+            shirt_id TEXT NOT NULL,
+            size TEXT NOT NULL,
+            color TEXT,
+            quantity INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (shirt_id) REFERENCES shirts(id)
+              ON DELETE CASCADE
+              ON UPDATE CASCADE
+        )`
+      ).run();
+
+      db.prepare(
         `CREATE TABLE IF NOT EXISTS shirts (
             no INTEGER PRIMARY KEY AUTOINCREMENT,
             id TEXT NOT NULL UNIQUE,
-            title TEXT NOT NULL ,
+            identificator TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL ,
             description TEXT NOT NULL ,
             price REAL NOT NULL ,
-            coverImage TEXT NOT NULL ,
-            stock INTEGER NOT NULL ,
-            images TEXT NOT NULL ,
+            coverImageUrl TEXT NOT NULL ,
+            media TEXT NOT NULL ,
             category TEXT NOT NULL ,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -5,6 +5,7 @@ const app = express();
 import { chooseDatabase } from "./database";
 import adminRouter from "./routes/add.admin.routes";
 import loginRouter from "./routes/login.routes";
+import shirtRouter from "./routes/shirt.routes";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(helmet());
 app.use("/api/adm", adminRouter);
 app.use("/api/login", loginRouter);
+app.use("/api/shirt", shirtRouter);
 
 import { PORT, TEST_URL, ENV } from "./config";
 
