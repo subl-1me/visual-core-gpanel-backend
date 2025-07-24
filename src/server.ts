@@ -6,6 +6,7 @@ import { chooseDatabase } from "./database";
 import adminRouter from "./routes/add.admin.routes";
 import loginRouter from "./routes/login.routes";
 import shirtRouter from "./routes/shirt.routes";
+import stockRouter from "./routes/stock.routes";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -14,6 +15,7 @@ app.use(helmet());
 app.use("/api/adm", adminRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/shirt", shirtRouter);
+app.use("/api/stock", stockRouter);
 
 import { PORT, TEST_URL, ENV } from "./config";
 

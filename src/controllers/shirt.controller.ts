@@ -7,11 +7,12 @@ export const items = async (_req: Request, res: Response) => {
 };
 
 export const insert = async (req: Request, res: Response) => {
-  const { body } = req.body;
-  if (!body) {
+  const shirt = req.body;
+  console.log(shirt);
+  if (!shirt) {
     return res.status(400).send({ error: true, message: "Body is required." });
   }
 
-  const response = await shirtService.insert(body);
+  const response = await shirtService.insert(shirt);
   return res.status(200).send(response);
 };

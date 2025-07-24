@@ -11,6 +11,6 @@ export default interface Shirt {
   tier: "SEASON" | "DROP" | "CUSTOM" | "UNKNOWN";
   media: string[];
   stock?: Stock;
-  color: string;
+  colors: string[];
   price: number;
 }

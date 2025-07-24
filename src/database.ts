@@ -24,15 +24,13 @@ export const chooseDatabase = () => {
         `CREATE TABLE IF NOT EXISTS stock (
             pos INTEGER PRIMARY KEY AUTOINCREMENT,
             id TEXT NOT NULL UNIQUE,
-            shirt_id TEXT NOT NULL,
-            size TEXT NOT NULL,
-            color TEXT,
-            quantity INTEGER NOT NULL,
+            sizes TEXT NOT NULL ,
+            availableColors TEXT NOT NULL,
+            details TEXT NOT NULL,
+            status TEXT NOT NULL,
+            total INTEGER NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (shirt_id) REFERENCES shirts(id)
-              ON DELETE CASCADE
-              ON UPDATE CASCADE
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`
       ).run();
 
@@ -45,8 +43,9 @@ export const chooseDatabase = () => {
             description TEXT NOT NULL ,
             price REAL NOT NULL ,
             coverImageUrl TEXT NOT NULL ,
+            tier TEXT NOT NULL ,
+            colors TEXT NOT NULL ,
             media TEXT NOT NULL ,
-            category TEXT NOT NULL ,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`

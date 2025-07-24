@@ -1,4 +1,4 @@
-export const tierDictionary = {
+export const tierDictionary: any = {
   DROP: "D",
   CUSTOM: "P",
   SEASON: "S",
