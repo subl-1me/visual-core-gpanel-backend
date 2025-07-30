@@ -52,18 +52,31 @@ export const chooseDatabase = () => {
       ).run();
 
       db.prepare(
-        `CREATE TABLE IF NOT EXISTS orders (
+        `CREATE TABLE IF NOT EXISTS customer (
             no INTEGER PRIMARY KEY AUTOINCREMENT,
             id TEXT NOT NULL UNIQUE,
-            customerName TEXT NOT NULL,
-            customerEmail TEXT NOT NULL,
-            customerPhone TEXT NOT NULL,
-            customerAddress TEXT NOT NULL,
-            customerCity TEXT NOT NULL,
-            customerState TEXT NOT NULL,
+            name TEXT NOT NULL ,
+            email TEXT NOT NULL ,
+            phone TEXT NOT NULL ,
+            address TEXT NOT NULL ,
+            level INTEGER NOT NULL,
+            pastOrders TEXT NOT NULL ,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`
+      ).run();
+
+      db.prepare(
+        `CREATE TABLE IF NOT EXISTS sale (
+            no INTEGER PRIMARY KEY AUTOINCREMENT,
+            id TEXT NOT NULL UNIQUE,
+            customer TEXT NOT NULL,
             items TEXT NOT NULL,
             total REAL NOT NULL,
-            status TEXT NOT NULL DEFAULT 'PENDING',
+            paymentMethod TEXT NOT NULL,
+            additionalNotes TEXT NOT NULL,
+            type TEXT NOT NULL,
+            status TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`

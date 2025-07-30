@@ -7,6 +7,8 @@ import adminRouter from "./routes/add.admin.routes";
 import loginRouter from "./routes/login.routes";
 import shirtRouter from "./routes/shirt.routes";
 import stockRouter from "./routes/stock.routes";
+import saleRouter from "./routes/sale.routes";
+import customerRouter from "./routes/customer.routes";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,6 +18,8 @@ app.use("/api/adm", adminRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/shirt", shirtRouter);
 app.use("/api/stock", stockRouter);
+app.use("/api/customer", customerRouter);
+app.use("/api/sale", saleRouter);
 
 import { PORT, TEST_URL, ENV } from "./config";
 
