@@ -13,6 +13,8 @@ export const chooseDatabase = () => {
             pos INTEGER PRIMARY KEY AUTOINCREMENT,
             id TEXT NOT NULL UNIQUE,
             username TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
+            lastname TEXT NOT NULL,
             password TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

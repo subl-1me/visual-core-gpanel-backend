@@ -4,5 +4,6 @@ import * as controller from "../controllers/add-admin.controller";
 
 adminRouter.post("/", controller.insert);
 adminRouter.get("/", controller.items);
+adminRouter.put("/:adminId", controller.update);
 
 export default adminRouter;

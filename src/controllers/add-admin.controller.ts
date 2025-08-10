@@ -42,3 +42,19 @@ export const items = async (_req: Request, res: Response) => {
   const items = await adminService.items();
   return res.send({ error: false, items });
 };
+
+export const update = async (req: Request, res: Response) => {
+  const { adminId } = req.params;
+  console.log(adminId);
+  if (!adminId) {
+    res.status(400);
+    return res.send({ error: true, message: "Admin ID is required." });
+  }
+
+  const updateResponse = await adminService.update(adminId, req.body);
+  return res.send({
+    error: updateResponse.error,
+    message: updateResponse.response,
+    queryResponse: updateResponse.response,
+  });
+};

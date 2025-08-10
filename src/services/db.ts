@@ -1,3 +1,4 @@
+import { error } from "console";
 import { ENV } from "../config";
 import { chooseDatabase } from "../database";
 
@@ -42,4 +43,27 @@ export const item = async (id: string = "", username: string = "") => {
     const item = stmt.get(id !== "" ? id : username);
     return item;
   }
+};
+
+export const update = async (adminId: string, data: any) => {
+  if (ENV === "development") {
+    const db = chooseDatabase();
+    const stmt = db.prepare(
+      `UPDATE admin SET username = ?, email = ?, name = ?, lastname = ? WHERE id = ?`
+    );
+    const response = stmt.run(
+      data.username,
+      data.email,
+      data.name,
+      data.lastname,
+      adminId
+    );
+
+    return {
+      error: false,
+      response,
+    };
+  }
+
+  return { error: true, message: "Database not available." };
 };
