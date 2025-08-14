@@ -2,47 +2,46 @@ import * as uiid from "uuid";
 
 import { ENV } from "../config";
 import { chooseDatabase } from "../database";
-import Stock from "../models/test/Stock";
+import Stock from "../models/Stock";
 
-export const insert = async (stock: Stock) => {
-  if (ENV === "development") {
-    const db = chooseDatabase();
-    const stmt = db.prepare(`
-        INSERT INTO stock (id, sizes, availableColors, details, total, status) VALUES (?, ?, ?, ?, ?, ?)
-        `);
+export const insert = async (stock: any) => {
+  const newStock = new Stock({
+    sizes: stock.sizes,
+    availableColors: stock.availableColors,
+    details: stock.details,
+    status: stock.status,
+    total: stock.total,
+  });
 
-    const id = uiid.v7(); // id stock
-    const res = stmt.run(
-      id,
-      JSON.stringify(stock.sizes),
-      JSON.stringify(stock.availableColors),
-      JSON.stringify(stock.details),
-      stock.total,
-      stock.status
-    );
-
-    return res;
+  const saved = await newStock.save();
+  if (saved) {
+    return { error: false, response: saved };
   }
+
+  return { error: true, response: null };
 };
 
 export const items = async () => {
-  if (ENV === "development") {
-    const db = chooseDatabase();
-    const stmt = db.prepare(`
-        SELECT * FROM stock
-        `);
-    const items = stmt.all();
-    return items as Stock[];
+  const items = await Stock.find();
+  if (items) {
+    return items.map((item) => ({
+      id: item.id,
+      sizes: item.sizes,
+      availableColors: item.availableColors,
+      details: item.details,
+      status: item.status,
+      total: item.total,
+    }));
   }
+
+  return [];
 };
 
 export const remove = async (stockId: string) => {
-  if (ENV === "development") {
-    const db = chooseDatabase();
-    const stmt = db.prepare(`
-      DELETE FROM stock WHERE id = ?
-      `);
-    const res = stmt.run(stockId);
-    return res;
+  const deleted = await Stock.findByIdAndDelete(stockId);
+  if (deleted) {
+    return { error: false, response: deleted };
   }
+
+  return { error: true, response: null };
 };

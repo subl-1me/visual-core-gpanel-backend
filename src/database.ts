@@ -1,6 +1,7 @@
 import Database from "better-sqlite3";
-import { ENV, TEST_DB_PATH } from "./config";
+import { ENV, MONGO_URL, TEST_DB_PATH } from "./config";
 import path from "path";
+import mongoose from "mongoose";
 
 export const chooseDatabase = () => {
   try {
@@ -103,5 +104,15 @@ export const chooseDatabase = () => {
   } catch (error) {
     console.error("Error initializing database:", error);
     throw new Error("Database initialization failed");
+  }
+};
+
+export const connectDB = async () => {
+  try {
+    const mongo = await mongoose.connect(MONGO_URL);
+    console.log("MongoDB connected ✅");
+  } catch (error) {
+    console.error("Error connecting to database:", error);
+    throw new Error("Database connection failed");
   }
 };

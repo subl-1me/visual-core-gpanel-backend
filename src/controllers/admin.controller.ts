@@ -1,7 +1,7 @@
 import * as uiid from "uuid";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import * as adminService from "../services/db";
+import * as adminService from "../services/admin.service";
 
 export const insert = async (req: Request, res: Response) => {
   if (!req.body) {
@@ -10,7 +10,7 @@ export const insert = async (req: Request, res: Response) => {
   }
 
   //TODO: Improve body validation
-  const { username, email, password } = req.body;
+  const { username, email, password, name, lastName } = req.body;
   if (username === "" || email === "" || password === "") {
     res.status(400);
     return res.send({
@@ -24,9 +24,9 @@ export const insert = async (req: Request, res: Response) => {
   bcrypt.genSalt(saltRounds, async (err, salt) => {
     bcrypt.hash(password, salt, async (err, hash) => {
       // generate uuid & save on db
-      let newId = uiid.v7();
       const response = await adminService.insert({
-        newId,
+        name,
+        lastName,
         username,
         email,
         password: hash,
@@ -40,7 +40,7 @@ export const insert = async (req: Request, res: Response) => {
 
 export const items = async (_req: Request, res: Response) => {
   const items = await adminService.items();
-  return res.send({ error: false, items });
+  return res.send({ error: false, users: items });
 };
 
 export const update = async (req: Request, res: Response) => {

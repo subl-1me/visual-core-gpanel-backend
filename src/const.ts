@@ -1,6 +1,6 @@
 export const tierDictionary: any = {
   DROP: "D",
-  CUSTOM: "P",
+  CUSTOM: "C",
   SEASON: "S",
   UNKNOWN: "U",
 };

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as authService from "../services/auth.service";
-import * as adminController from "../services/db";
+import * as adminController from "../services/admin.service";
 
 export const authenticate = async (req: Request, res: Response) => {
   const { body } = req;
@@ -23,7 +23,7 @@ export const authenticate = async (req: Request, res: Response) => {
     return res.status(404).send({ error: false, message: "User not found." });
   }
 
-  // authenticate;
+  // authenticated;
   const authResponse = await authService.auth({ username, password }, user);
   return res.status(200).send({ error: false, authResponse });
 };

@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import dotenv from "dotenv";
+dotenv.config();
 const app = express();
-import { chooseDatabase } from "./database";
-import adminRouter from "./routes/add.admin.routes";
+import { chooseDatabase, connectDB } from "./database";
+import adminRouter from "./routes/admin.routes";
 import loginRouter from "./routes/login.routes";
 import shirtRouter from "./routes/shirt.routes";
 import stockRouter from "./routes/stock.routes";
@@ -33,6 +35,7 @@ export default class Server {
 
         console.log(`Server is running on ${TEST_URL}.`);
         console.log(`Initializing database... Current: ${ENV}`);
+        connectDB();
         chooseDatabase();
       });
     } catch (error) {

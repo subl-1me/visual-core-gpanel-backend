@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as stockService from "../services/stock.service";
 import { ParsedQs } from "qs";
+import { isValidObjectId } from "mongoose";
 
 export const insert = async (req: Request, res: Response) => {
   const stock = req.body;
@@ -8,8 +9,8 @@ export const insert = async (req: Request, res: Response) => {
     return res.status(400).send({ error: true, message: "Body is required." });
   }
 
-  const dbResponse = await stockService.insert(stock);
-  return res.send({ error: false, dbResponse });
+  const response = await stockService.insert(stock);
+  return res.send({ error: false, response });
 };
 
 export const items = async (req: Request, res: Response) => {
@@ -29,6 +30,12 @@ export const remove = async (req: Request, res: Response) => {
   } else if (Array.isArray(stockId) && typeof stockId[0] === "string") {
     stockId = stockId[0];
   } else {
+    return res
+      .status(400)
+      .send({ error: true, message: "Invalid stock ID format" });
+  }
+
+  if (!isValidObjectId(stockId)) {
     return res
       .status(400)
       .send({ error: true, message: "Invalid stock ID format" });

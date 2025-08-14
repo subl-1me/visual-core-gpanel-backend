@@ -1,39 +1,28 @@
 import { ENV } from "../config";
 import { chooseDatabase } from "../database";
-import Customer from "../models/test/Customer";
+import Customer from "../models/Customer";
 import * as uuid from "uuid";
 
-export const insert = async (customer: Customer) => {
-  if (ENV === "development") {
-    const db = chooseDatabase();
-    const stmt = db.prepare(`
-            INSERT INTO customer (id, name, email, phone, address, level, pastOrders) VALUES (?, ?, ?, ?, ?, ?, ?)
-            `);
+export const insert = async (payload: any) => {
+  console.log(payload);
+  const customer = new Customer({
+    name: payload.name,
+    email: payload.email,
+    phone: payload.phone,
+    address: payload.address,
+  });
 
-    const id = uuid.v7();
-    const response = stmt.run(
-      id,
-      customer.name,
-      customer.email,
-      customer.phone,
-      customer.address,
-      1,
-      JSON.stringify([])
-    );
-
-    return response;
+  const savedCustomer = await customer.save();
+  if (!savedCustomer) {
+    return { error: true, message: "Customer could not be created." };
   }
+
+  return { error: false, customer: savedCustomer };
 };
 
 export const items = async () => {
-  if (ENV === "development") {
-    const db = chooseDatabase();
-    const stmt = db.prepare(`
-            SELECT * FROM customer
-            `);
-    const response = stmt.all();
-    return response;
-  }
+  const customers = await Customer.find();
+  return customers;
 };
 
 export const remove = async (customerId: string) => {};
