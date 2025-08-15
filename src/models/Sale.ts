@@ -17,7 +17,7 @@ const saleSchema = new mongoose.Schema(
     ],
     paymentMethod: { type: String, required: true },
     additionalNotes: { type: String },
-    customerId: {
+    customer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Customer",
       required: true,
@@ -27,4 +27,4 @@ const saleSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("sale", saleSchema, "sale");
+export default mongoose.model("Sale", saleSchema);

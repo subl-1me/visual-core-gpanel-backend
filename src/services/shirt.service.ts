@@ -1,7 +1,8 @@
 import { ENV } from "../config";
 import { tierDictionary } from "../const";
 import { chooseDatabase } from "../database";
-import Shirt from "../models/test/Shirt";
+import Counter from "../models/Counter";
+import Shirt from "../models/Shirt";
 import * as uiid from "uuid";
 
 export const items = async () => {
@@ -9,13 +10,13 @@ export const items = async () => {
     const db = chooseDatabase();
     const stmt = db.prepare(`SELECT * FROM shirts`);
     const response = stmt.all();
-    return response as Shirt[];
+    return response as any[];
   }
 
   return [];
 };
 
-export const insert = async (shirt: Shirt) => {
+export const insert = async (shirt: any) => {
   if (ENV === "development") {
     const db = chooseDatabase();
     const stmt = db.prepare(
@@ -48,4 +49,20 @@ export const insert = async (shirt: Shirt) => {
 
     return { error: false, response };
   }
+};
+
+export const remove = async (saleId: string) => {};
+
+export const removeMany = async (ids: string[]) => {
+  const result = await Shirt.deleteMany({
+    _id: { $in: ids },
+  });
+
+  // update counter
+  const totalShirts = ids.length;
+  const counter = await Counter.findByIdAndUpdate("shirtId", {
+    $inc: { seq: -totalShirts },
+  });
+
+  return result;
 };

@@ -4,5 +4,6 @@ const saleRouter = Router();
 
 saleRouter.post("/", saleController.insert);
 saleRouter.get("/", saleController.items);
+saleRouter.delete("/", saleController.remove);
 
 export default saleRouter;

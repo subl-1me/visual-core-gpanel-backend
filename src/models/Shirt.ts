@@ -41,4 +41,4 @@ const shritSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("shirt", shritSchema, "shirt");
+export default mongoose.model("Shirt", shritSchema);

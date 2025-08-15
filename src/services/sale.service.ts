@@ -3,9 +3,9 @@ import Shirt from "../models/Shirt";
 import Sale from "../models/Sale";
 import { tierDictionary } from "../const";
 import { getNextSequence } from "../utils/getNextSequence";
+import { removeMany } from "./shirt.service";
 
 export const insert = async (salePayload: any) => {
-  console.log(salePayload);
   const totalShirtsNeeded = salePayload.items.reduce(
     (sum: any, item: any) => sum + item.quantity,
     0
@@ -38,21 +38,17 @@ export const insert = async (salePayload: any) => {
     return shirts;
   });
 
-  console.log("newShirts", newShirts);
-  await Shirt.insertMany(newShirts);
-
   const shirts = await Shirt.insertMany(newShirts);
   if (!shirts || shirts.length === 0) {
     return { error: true, message: "No shirts were created." };
   }
-  console.log("shirts", shirts);
 
   const sale = new Sale({
     type: salePayload.type,
     status: salePayload.status,
     items: shirts.map((shirt: any) => shirt._id),
     paymentMethod: salePayload.paymentMethod,
-    customerId: salePayload.customer._id,
+    customer: salePayload.customer._id,
     total: salePayload.total,
   });
 
@@ -64,7 +60,33 @@ export const insert = async (salePayload: any) => {
 
 export const items = async () => {
   const sales = await Sale.find()
-    .populate("customerId")
+    .populate("customer")
     .populate("items.shirtId");
   return sales;
+};
+
+export const item = async (id: string) => {
+  if (!id) {
+    return { error: true, message: "Sale ID is required." };
+  }
+
+  const sale = await Sale.findById(id);
+  return sale;
+};
+
+export const remove = async (saleId: string) => {
+  const sale = await item(saleId);
+  if (!sale || (sale as any).error) {
+    return { error: true, message: "Sale doesn't exist." };
+  }
+
+  // first remove shirts attached to sale
+  const removing = await removeMany((sale as any).items);
+
+  // remove sale
+  const response = await Sale.findOneAndDelete({
+    _id: saleId,
+  });
+
+  return response;
 };
