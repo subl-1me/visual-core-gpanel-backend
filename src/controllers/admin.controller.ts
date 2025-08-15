@@ -19,22 +19,34 @@ export const insert = async (req: Request, res: Response) => {
     });
   }
 
-  // encrypt password
-  const saltRounds = 10;
-  bcrypt.genSalt(saltRounds, async (err, salt) => {
-    bcrypt.hash(password, salt, async (err, hash) => {
-      // generate uuid & save on db
-      const response = await adminService.insert({
-        name,
-        lastName,
-        username,
-        email,
-        password: hash,
-      });
+  const result = await new Promise((resolve, reject) => {
+    // encrypt password
+    const saltRounds = 10;
+    bcrypt.genSalt(saltRounds, async (err, salt) => {
+      bcrypt.hash(password, salt, async (err, hash) => {
+        // generate uuid & save on db
+        const response = await adminService.insert({
+          name,
+          lastName,
+          username,
+          email,
+          password: hash,
+        });
 
-      res.status(201);
-      return res.send({ error: false, message: "User created successfully." });
+        if (err) {
+          reject(err);
+        }
+
+        resolve(response);
+      });
     });
+  });
+
+  res.status(201);
+  return res.send({
+    error: false,
+    message: "User created successfully.",
+    result,
   });
 };
 
@@ -45,7 +57,6 @@ export const items = async (_req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
   const { adminId } = req.params;
-  console.log(adminId);
   if (!adminId) {
     res.status(400);
     return res.send({ error: true, message: "Admin ID is required." });

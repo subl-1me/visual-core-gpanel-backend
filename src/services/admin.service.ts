@@ -20,18 +20,7 @@ export const insert = async (user: any) => {
 
 export const items = async () => {
   const items = await Admin.find();
-  console.log(items);
-  if (items) {
-    return items.map((item) => ({
-      id: item.id,
-      username: item.username,
-      email: item.email,
-      name: item.name,
-      lastName: item.lastName,
-    }));
-  }
-
-  return [];
+  return items;
 };
 
 export const item = async (id: string = "", username: string = "") => {
