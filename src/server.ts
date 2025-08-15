@@ -36,7 +36,6 @@ export default class Server {
         console.log(`Server is running on ${TEST_URL}.`);
         console.log(`Initializing database... Current: ${ENV}`);
         connectDB();
-        chooseDatabase();
       });
     } catch (error) {
       throw new Error(
