@@ -59,9 +59,7 @@ export const insert = async (salePayload: any) => {
 };
 
 export const items = async () => {
-  const sales = await Sale.find()
-    .populate("customer")
-    .populate("items.shirtId");
+  const sales = await Sale.find().populate("customer").populate("items");
   return sales;
 };
 
