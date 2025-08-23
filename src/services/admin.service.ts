@@ -4,17 +4,24 @@ import Admin from "../models/Admin";
 import { ObjectId } from "mongodb";
 
 export const insert = async (user: any) => {
-  const createUser = new Admin({
-    username: user.username,
-    email: user.email,
-    password: user.password,
-    name: user.name,
-    lastName: user.lastName,
-  });
+  try {
+    const createUser = new Admin({
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      name: user.name,
+      lastName: user.lastName,
+    });
 
-  const saved = await createUser.save();
-  if (saved) {
-    return { error: false, response: saved };
+    const newUser = await createUser.save();
+    return { error: false, user: newUser };
+  } catch (err) {
+    console.log(
+      `[DB Error] Error creating admin user: ${
+        err instanceof Error ? err.message : err
+      }`
+    );
+    throw new Error("Database operation failed.");
   }
 };
 
@@ -23,21 +30,26 @@ export const items = async () => {
   return items;
 };
 
-export const item = async (id: string = "", username: string = "") => {
+export const item = async (
+  id: string = "",
+  username: string = "",
+  email: string = ""
+) => {
   const conditions: any[] = [];
   if (id && ObjectId.isValid(id)) {
     conditions.push({ _id: new ObjectId(id) });
   }
+
   if (username) {
     conditions.push({ username: username });
   }
 
-  const admin = await Admin.findOne({ $or: conditions });
-  if (admin) {
-    return admin;
+  if (email) {
+    conditions.push({ email: email });
   }
 
-  return null;
+  const admin = await Admin.findOne({ $or: conditions });
+  return admin;
 };
 
 export const update = async (adminId: string, data: any) => {

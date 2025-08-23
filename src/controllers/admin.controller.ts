@@ -1,53 +1,67 @@
 import * as uiid from "uuid";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import * as adminService from "../services/admin.service";
 
-export const insert = async (req: Request, res: Response) => {
-  if (!req.body) {
-    res.status(400);
-    return res.send({ error: true, message: "Body is required." });
-  }
+export const insert = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.body) {
+      res.status(400);
+      return res.send({ success: false, message: "Body is required." });
+    }
 
-  //TODO: Improve body validation
-  const { username, email, password, name, lastName } = req.body;
-  if (username === "" || email === "" || password === "") {
-    res.status(400);
-    return res.send({
-      error: true,
-      mesage: "Fields cannot be empty. Please, check them again.",
-    });
-  }
+    //TODO: Improve body validation
+    const { username, email, password, name, lastName, id } = req.body;
+    if (username === "" || email === "" || password === "") {
+      return res.status(400).send({
+        success: false,
+        message: "Body cannot contain empty fields.",
+      });
+    }
 
-  const result = await new Promise((resolve, reject) => {
-    // encrypt password
-    const saltRounds = 10;
-    bcrypt.genSalt(saltRounds, async (err, salt) => {
-      bcrypt.hash(password, salt, async (err, hash) => {
-        // generate uuid & save on db
-        const response = await adminService.insert({
-          name,
-          lastName,
-          username,
-          email,
-          password: hash,
+    // find existing user
+    const existingUser = await adminService.item(id || "", username, email);
+    if (existingUser) {
+      return res.status(409).send({
+        success: false,
+        message: "Username or email already taken.",
+      });
+    }
+
+    const result = await new Promise((resolve, reject) => {
+      // encrypt password
+      const saltRounds = 10;
+      bcrypt.genSalt(saltRounds, async (err, salt) => {
+        bcrypt.hash(password, salt, async (err, hash) => {
+          // save on db
+          const response = await adminService.insert({
+            name,
+            lastName,
+            username,
+            email,
+            password: hash,
+          });
+
+          if (err) {
+            reject(err);
+          }
+
+          resolve(response);
         });
-
-        if (err) {
-          reject(err);
-        }
-
-        resolve(response);
       });
     });
-  });
 
-  res.status(201);
-  return res.send({
-    error: false,
-    message: "User created successfully.",
-    result,
-  });
+    return res.status(200).send({
+      success: result instanceof Error,
+      result,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const items = async (_req: Request, res: Response) => {

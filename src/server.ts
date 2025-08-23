@@ -11,12 +11,13 @@ import shirtRouter from "./routes/shirt.routes";
 import stockRouter from "./routes/stock.routes";
 import saleRouter from "./routes/sale.routes";
 import customerRouter from "./routes/customer.routes";
+import handler from "./middlewares/Handler";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
-app.use("/api/adm", adminRouter);
+app.use("/api/adm", adminRouter, handler);
 app.use("/api/login", loginRouter);
 app.use("/api/shirt", shirtRouter);
 app.use("/api/stock", stockRouter);
