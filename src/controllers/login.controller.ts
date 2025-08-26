@@ -32,7 +32,7 @@ export const authenticate = async (
 
     // authenticated;
     const response = await authService.auth({ username, password }, user);
-    return res.send({ success: false, response });
+    return res.send({ success: true, response });
   } catch (err) {
     next(err);
   }

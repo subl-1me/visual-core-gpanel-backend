@@ -13,7 +13,7 @@ export const auth = async (user: any, stored: any) => {
       pos: stored.pos,
       tkn: null,
     };
-    return { error: false, authenticated: true, session };
+    return { authenticated: true, session };
   }
 
   throw new Error("Bad login.");

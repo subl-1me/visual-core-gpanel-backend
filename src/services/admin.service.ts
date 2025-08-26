@@ -1,5 +1,3 @@
-import { ENV } from "../config";
-import { chooseDatabase } from "../database";
 import Admin from "../models/Admin";
 import { ObjectId } from "mongodb";
 
