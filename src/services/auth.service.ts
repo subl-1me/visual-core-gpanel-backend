@@ -1,8 +1,6 @@
 import bcrypt from "bcrypt";
 
 export const auth = async (user: any, stored: any) => {
-  console.log(stored);
-  console.log(user);
   const hash = stored.password;
   const match = await bcrypt.compare(user.password, hash);
   if (match) {
@@ -18,9 +16,5 @@ export const auth = async (user: any, stored: any) => {
     return { error: false, authenticated: true, session };
   }
 
-  return {
-    error: true,
-    message: "Incorrect password.",
-    authenticated: false,
-  };
+  throw new Error("Bad login.");
 };

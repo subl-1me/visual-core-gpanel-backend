@@ -1,19 +1,55 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import * as customerService from "../services/customer.service";
 
-export const insert = async (req: Request, res: Response) => {
-  const customer = req.body;
-  if (!customer) {
-    return res.status(400).send({ error: true, message: "Body is required." });
-  }
+export const insert = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const customer = req.body;
+    if (!customer) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Body is required." });
+    }
 
-  const dbResponse = await customerService.insert(customer);
-  return res.send({ error: false, dbResponse });
+    const response = await customerService.insert(customer);
+    return res.send({ success: true, response });
+  } catch (err) {
+    next(err);
+  }
 };
 
-export const remove = () => {};
+export const remove = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { customerId } = req.params;
+    if (!customerId) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Customer ID is required." });
+    }
 
-export const items = async (req: Request, res: Response) => {
-  const dbResponse = await customerService.items();
-  return res.send({ error: false, items: dbResponse });
+    const response = await customerService.remove(customerId);
+    return res.send({ success: true, response });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const items = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const dbResponse = await customerService.items();
+    return res.send({ error: false, items: dbResponse });
+  } catch (err) {
+    next(err);
+  }
 };

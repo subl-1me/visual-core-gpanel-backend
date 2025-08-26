@@ -1,4 +1,3 @@
-import * as uiid from "uuid";
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import * as adminService from "../services/admin.service";
@@ -32,7 +31,7 @@ export const insert = async (
       });
     }
 
-    const result = await new Promise((resolve, reject) => {
+    const response = await new Promise((resolve, reject) => {
       // encrypt password
       const saltRounds = 10;
       bcrypt.genSalt(saltRounds, async (err, salt) => {
@@ -55,31 +54,77 @@ export const insert = async (
       });
     });
 
-    return res.status(200).send({
-      success: result instanceof Error,
-      result,
+    return res.send({
+      success: response instanceof Error,
+      response,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const items = async (_req: Request, res: Response) => {
-  const items = await adminService.items();
-  return res.send({ error: false, users: items });
+export const items = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const response = await adminService.items();
+    return res.send({ success: true, response });
+  } catch (err) {
+    next(err);
+  }
 };
 
-export const update = async (req: Request, res: Response) => {
-  const { adminId } = req.params;
-  if (!adminId) {
-    res.status(400);
-    return res.send({ error: true, message: "Admin ID is required." });
-  }
+export const item = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { adminId, username, email } = req.params;
+    if (!adminId && !username && !email) {
+      return res.status(400).send({
+        success: false,
+        message: "At least 1 filter is required to search an item.",
+      });
+    }
 
-  const updateResponse = await adminService.update(adminId, req.body);
-  return res.send({
-    error: updateResponse.error,
-    message: updateResponse.response,
-    queryResponse: updateResponse.response,
-  });
+    const response = await adminService.item(adminId, username, email);
+    if (!response) {
+      return res
+        .status(404)
+        .send({ success: false, message: "User not found." });
+    }
+
+    return res.send({ success: true, response });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const update = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { adminId } = req.params;
+    if (!adminId) {
+      res.status(400);
+      return res.send({ success: false, message: "Admin ID is required." });
+    }
+
+    // check if user exists
+    const user = await adminService.item(adminId);
+    if (!user) {
+      return res
+        .status(404)
+        .send({ success: false, message: "User not found." });
+    }
+
+    const response = await adminService.update(adminId, req.body);
+    return res.send({
+      success: true,
+      response,
+    });
+  } catch (err) {
+    next(err);
+  }
 };

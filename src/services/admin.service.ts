@@ -4,25 +4,16 @@ import Admin from "../models/Admin";
 import { ObjectId } from "mongodb";
 
 export const insert = async (user: any) => {
-  try {
-    const createUser = new Admin({
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      name: user.name,
-      lastName: user.lastName,
-    });
+  const createUser = new Admin({
+    username: user.username,
+    email: user.email,
+    password: user.password,
+    name: user.name,
+    lastName: user.lastName,
+  });
 
-    const newUser = await createUser.save();
-    return { error: false, user: newUser };
-  } catch (err) {
-    console.log(
-      `[DB Error] Error creating admin user: ${
-        err instanceof Error ? err.message : err
-      }`
-    );
-    throw new Error("Database operation failed.");
-  }
+  const newUser = await createUser.save();
+  return newUser;
 };
 
 export const items = async () => {
@@ -40,11 +31,11 @@ export const item = async (
     conditions.push({ _id: new ObjectId(id) });
   }
 
-  if (username) {
+  if (username !== "") {
     conditions.push({ username: username });
   }
 
-  if (email) {
+  if (email !== "") {
     conditions.push({ email: email });
   }
 
@@ -53,24 +44,25 @@ export const item = async (
 };
 
 export const update = async (adminId: string, data: any) => {
-  if (ENV === "development") {
-    const db = chooseDatabase();
-    const stmt = db.prepare(
-      `UPDATE admin SET username = ?, email = ?, name = ?, lastname = ? WHERE id = ?`
-    );
-    const response = stmt.run(
-      data.username,
-      data.email,
-      data.name,
-      data.lastname,
-      adminId
-    );
+  const updateData: { [key: string]: any } = {};
 
-    return {
-      error: false,
-      response,
-    };
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== undefined && data[key] !== null) {
+      updateData[key] = data[key];
+    }
+  });
+
+  const updatedAdmin = Admin.findByIdAndUpdate(
+    adminId,
+    {
+      $set: updateData,
+    },
+    { new: true }
+  );
+
+  if (!updatedAdmin) {
+    throw new Error("User not found.");
   }
 
-  return { error: true, message: "Database not available." };
+  return updatedAdmin;
 };

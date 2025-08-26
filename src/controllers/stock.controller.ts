@@ -1,46 +1,74 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import * as stockService from "../services/stock.service";
-import { ParsedQs } from "qs";
 import { isValidObjectId } from "mongoose";
 
-export const insert = async (req: Request, res: Response) => {
-  const stock = req.body;
-  if (!stock) {
-    return res.status(400).send({ error: true, message: "Body is required." });
-  }
+export const insert = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const stock = req.body;
+    if (!stock) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Body is required." });
+    }
 
-  const response = await stockService.insert(stock);
-  return res.send({ error: false, response });
+    const response = await stockService.insert(stock);
+    return res.send({ success: true, response });
+  } catch (err) {
+    next(err);
+  }
 };
 
-export const items = async (req: Request, res: Response) => {
-  const stocks = await stockService.items();
-  return res.send({ error: false, items: stocks });
+export const items = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const stocks = await stockService.items();
+    return res.send({ success: true, items: stocks });
+  } catch (err) {
+    next(err);
+  }
 };
 
-export const remove = async (req: Request, res: Response) => {
-  let stockId = req.query.stock_id;
-  if (!stockId) {
-    return res.send({ error: true, message: "Stock ID cannot be undefined" });
-  }
+export const remove = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let stockId = req.query.stock_id;
+    if (!stockId) {
+      return res.status(400).send({
+        success: false,
+        message: "Stock ID cannot be undefined.",
+      });
+    }
 
-  // Ensure stockId is a string
-  if (typeof stockId === "string") {
-    stockId = stockId;
-  } else if (Array.isArray(stockId) && typeof stockId[0] === "string") {
-    stockId = stockId[0];
-  } else {
-    return res
-      .status(400)
-      .send({ error: true, message: "Invalid stock ID format" });
-  }
+    // Ensure stockId is a string
+    if (typeof stockId === "string") {
+      stockId = stockId;
+    } else if (Array.isArray(stockId) && typeof stockId[0] === "string") {
+      stockId = stockId[0];
+    } else {
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid stock ID format." });
+    }
 
-  if (!isValidObjectId(stockId)) {
-    return res
-      .status(400)
-      .send({ error: true, message: "Invalid stock ID format" });
-  }
+    if (!isValidObjectId(stockId)) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid stock ID format." });
+    }
 
-  const dbResponse = await stockService.remove(stockId);
-  return res.send({ error: false, dbResponse });
+    const response = await stockService.remove(stockId);
+    return res.send({ success: true, response });
+  } catch (err) {
+    next(err);
+  }
 };

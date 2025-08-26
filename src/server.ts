@@ -18,11 +18,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use("/api/adm", adminRouter, handler);
-app.use("/api/login", loginRouter);
-app.use("/api/shirt", shirtRouter);
-app.use("/api/stock", stockRouter);
-app.use("/api/customer", customerRouter);
-app.use("/api/sale", saleRouter);
+app.use("/api/login", loginRouter, handler);
+app.use("/api/shirt", shirtRouter, handler);
+app.use("/api/stock", stockRouter, handler);
+app.use("/api/customer", customerRouter, handler);
+app.use("/api/sale", saleRouter, handler);
 
 import { PORT, TEST_URL, ENV } from "./config";
 

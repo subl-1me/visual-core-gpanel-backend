@@ -1,57 +1,79 @@
-import { ENV } from "../config";
 import { tierDictionary } from "../const";
-import { chooseDatabase } from "../database";
 import Counter from "../models/Counter";
 import Shirt from "../models/Shirt";
-import * as uiid from "uuid";
+import { getNextSequence } from "../utils/getNextSequence";
 
 export const items = async () => {
-  if (ENV === "development") {
-    const db = chooseDatabase();
-    const stmt = db.prepare(`SELECT * FROM shirts`);
-    const response = stmt.all();
-    return response as any[];
-  }
-
-  return [];
+  const shirts = await Shirt.find();
+  return shirts || [];
 };
 
-export const insert = async (shirt: any) => {
-  if (ENV === "development") {
-    const db = chooseDatabase();
-    const stmt = db.prepare(
-      `INSERT INTO shirts (id, identificator, name, description, coverImageUrl, tier, media, colors, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    );
+export const insert = async (body: any) => {
+  if (!body) {
+    throw new Error("Shirt body is required.");
+  }
 
-    // structure indeitificator code
-    const totalShirts = await items();
-    const tiers = Object.keys(tierDictionary);
-    let tier = tiers.find((t) => t === shirt.tier);
-    if (!tier) {
-      tier = "UNKNOWN"; // never happens
+  const startSeq = await getNextSequence("shirtId", 1); // Reserve a sequence range
+  const identificator = `VS-${tierDictionary[body.details.tier]}-${startSeq}`;
+  const shirt = new Shirt({
+    name: body.details.name,
+    description: body.details.description,
+    imageUrl: body.details.imageUrl || "https://example.com/default.jpg",
+    tier: body.details.tier,
+    media: body.details.media,
+    price: body.details.price,
+    size: body.size.size,
+    identificator,
+  });
+
+  const save = await shirt.save();
+  return save;
+};
+
+export const insertMany = async (items: any) => {
+  const totalShirtsNeeded = items.reduce(
+    (sum: any, item: any) => sum + item.quantity,
+    0
+  );
+  const startSeq = await getNextSequence("shirtId", totalShirtsNeeded); // Reserve a sequence range
+  const newShirts = items.flatMap((item: any, index: any) => {
+    let shirts = [];
+    let offset = items
+      .slice(0, index)
+      .reduce((sum: any, i: any) => sum + i.quantity, 0);
+
+    for (let i = 0; i < item.quantity; i++) {
+      const currentSeq = startSeq + offset + i;
+      const identificator = `VS-${
+        tierDictionary[item.details.tier]
+      }-${currentSeq}`;
+
+      shirts.push({
+        name: item.details.name,
+        description: item.details.description,
+        imageUrl: item.details.imageUrl || "https://example.com/default.jpg",
+        tier: item.details.tier,
+        media: item.details.media,
+        price: item.details.price,
+        size: item.size.size,
+        identificator,
+      });
     }
-    const creationTimestamp = new Date().getTime();
-    const identificator = `VC-${tierDictionary[tier]}-${
-      totalShirts.length + 1
-    }-${creationTimestamp}`;
+    return shirts;
+  });
 
-    const response = stmt.run(
-      uiid.v7(),
-      identificator,
-      shirt.name,
-      shirt.description,
-      shirt.coverImageUrl,
-      tier,
-      JSON.stringify(shirt.media),
-      JSON.stringify(shirt.colors),
-      shirt.price
-    );
-
-    return { error: false, response };
+  const shirts = await Shirt.insertMany(newShirts);
+  if (!shirts || shirts.length === 0) {
+    throw new Error("Error trying to insert Sale shirts.");
   }
+
+  return shirts;
 };
 
-export const remove = async (saleId: string) => {};
+export const remove = async (shirtId: string) => {
+  const response = await Shirt.findByIdAndDelete(shirtId);
+  return response;
+};
 
 export const removeMany = async (ids: string[]) => {
   const result = await Shirt.deleteMany({
