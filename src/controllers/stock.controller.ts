@@ -28,8 +28,8 @@ export const items = async (
   next: NextFunction
 ) => {
   try {
-    const stocks = await stockService.items();
-    return res.send({ success: true, items: stocks });
+    const response = await stockService.items();
+    return res.send({ success: true, response });
   } catch (err) {
     next(err);
   }

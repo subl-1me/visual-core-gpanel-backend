@@ -47,8 +47,8 @@ export const items = async (
   next: NextFunction
 ) => {
   try {
-    const dbResponse = await customerService.items();
-    return res.send({ error: false, items: dbResponse });
+    const response = await customerService.items();
+    return res.send({ error: false, response });
   } catch (err) {
     next(err);
   }
