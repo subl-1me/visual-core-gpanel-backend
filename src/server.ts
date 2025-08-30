@@ -2,9 +2,11 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
+import path from "path";
+import fs from "fs";
 dotenv.config();
 const app = express();
-import { chooseDatabase, connectDB } from "./database";
+import { connectDB } from "./database";
 import adminRouter from "./routes/admin.routes";
 import loginRouter from "./routes/login.routes";
 import shirtRouter from "./routes/shirt.routes";
@@ -17,6 +19,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
+
+//multer
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 app.use("/api/adm", adminRouter, handler);
 app.use("/api/login", loginRouter, handler);
 app.use("/api/shirt", shirtRouter, handler);

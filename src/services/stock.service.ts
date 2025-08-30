@@ -22,3 +22,27 @@ export const remove = async (stockId: string) => {
   const response = await Stock.findByIdAndDelete(stockId);
   return response;
 };
+
+export const update = async (stockId: string, data: any) => {
+  const updateData: { [key: string]: any } = {};
+
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== undefined && data[key] !== null) {
+      updateData[key] = data[key];
+    }
+  });
+
+  const updatedStock = Stock.findByIdAndUpdate(
+    stockId,
+    {
+      $set: updateData,
+    },
+    { new: true }
+  );
+
+  if (!updatedStock) {
+    throw new Error("Stock not found.");
+  }
+
+  return updatedStock;
+};
