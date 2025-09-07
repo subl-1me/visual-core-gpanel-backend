@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import * as stockService from "../services/stock.service";
 import { isValidObjectId } from "mongoose";
 import * as cloudinaryService from "../services/cloudinary.service";
-import { Media } from "../models/Stock";
 
 export const insert = async (
   req: Request,
