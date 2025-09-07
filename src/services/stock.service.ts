@@ -18,6 +18,11 @@ export const items = async () => {
   return items || [];
 };
 
+export const item = async (stockId: string) => {
+  const item = await Stock.findById(stockId);
+  return item;
+};
+
 export const remove = async (stockId: string) => {
   const response = await Stock.findByIdAndDelete(stockId);
   return response;

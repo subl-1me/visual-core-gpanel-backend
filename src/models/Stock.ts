@@ -26,7 +26,13 @@ const stockSchema = new mongoose.Schema(
         enum: ["SEASON", "DROP", "CUSTOM", "UNKNOWN"],
         default: "UNKNOWN",
       },
-      media: [String],
+      media: [
+        {
+          public_id: { type: String },
+          url: { type: String },
+        },
+      ],
+      default: [],
     },
     status: {
       type: String,
@@ -40,4 +46,26 @@ const stockSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Stock", stockSchema);
+export interface Media {
+  public_id: string;
+  url: string;
+}
+
+export interface StockDetails {
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  tier: "SEASON" | "DROP" | "CUSTOM" | "UNKNOWN";
+  media: Media[];
+}
+
+export interface Stock extends Document {
+  sizes: { size: string; quantity: number }[];
+  availableColors: string[];
+  details: StockDetails;
+  status: string;
+  total: number;
+}
+
+export default mongoose.model<Stock>("Stock", stockSchema);

@@ -11,5 +11,11 @@ stockRouter.post(
 );
 stockRouter.get("/", handler(stockController.items));
 stockRouter.delete("/", handler(stockController.remove));
+stockRouter.get("/:stockId", handler(stockController.item));
+stockRouter.put(
+  "/:stockId",
+  upload.array("images", 6),
+  handler(stockController.update)
+);
 
 export default stockRouter;

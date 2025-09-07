@@ -13,3 +13,8 @@ export const upload = async (filePath: string, name: string) => {
 
   return response;
 };
+
+export const remove = async (publicId: string) => {
+  const response = await Cloud.uploader.destroy(publicId);
+  return response;
+};
