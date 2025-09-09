@@ -14,6 +14,22 @@ export const items = async (
   }
 };
 
+export const item = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { identificator } = req.params;
+    if (!identificator) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Identificator is required." });
+    }
+
+    const response = await shirtService.item(identificator);
+    return res.send({ success: true, response });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const insert = async (
   req: Request,
   res: Response,

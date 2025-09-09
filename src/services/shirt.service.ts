@@ -8,6 +8,15 @@ export const items = async () => {
   return shirts || [];
 };
 
+export const item = async (identificator: string) => {
+  const shirt = await Shirt.findOne({
+    identificator: {
+      $regex: new RegExp(`^${identificator.trim()}$`, "i"), // Case-insensitive match
+    },
+  });
+  return shirt;
+};
+
 export const insert = async (body: any) => {
   if (!body) {
     throw new Error("Shirt body is required.");

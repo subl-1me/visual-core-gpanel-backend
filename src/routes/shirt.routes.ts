@@ -4,6 +4,7 @@ import * as shirtController from "../controllers/shirt.controller";
 import handler from "../middlewares/Handler";
 
 shirtRouter.get("/", handler(shirtController.items));
+shirtRouter.get("/:identificator", handler(shirtController.item));
 shirtRouter.post("/", handler(shirtController.insert));
 shirtRouter.delete("/:shirtId", handler(shirtController.remove));
 
