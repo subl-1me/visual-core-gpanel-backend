@@ -14,10 +14,6 @@ const shritSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    imageUrl: {
-      type: String,
-      required: true,
-    },
     identificator: {
       type: String,
       required: true,
@@ -28,10 +24,12 @@ const shritSchema = new mongoose.Schema(
       enum: ["SEASON", "DROP", "CUSTOM", "UNKNOWN"],
       default: "UNKNOWN",
     },
-    media: {
-      type: [String],
-      default: [],
-    },
+    media: [
+      {
+        public_id: { type: String },
+        url: { type: String },
+      },
+    ],
     size: {
       type: String,
       enum: ["S", "M", "L", "XL", "XXL"],

@@ -14,7 +14,7 @@ export const insert = async (stock: any) => {
 };
 
 export const items = async () => {
-  const items = await Stock.find();
+  const items = await Stock.find().populate("details.media");
   return items || [];
 };
 

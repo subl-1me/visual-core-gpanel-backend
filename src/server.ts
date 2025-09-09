@@ -13,6 +13,7 @@ import shirtRouter from "./routes/shirt.routes";
 import stockRouter from "./routes/stock.routes";
 import saleRouter from "./routes/sale.routes";
 import customerRouter from "./routes/customer.routes";
+import qrRouter from "./routes/qr.routes";
 import handler from "./middlewares/Handler";
 
 app.use(express.json());
@@ -32,6 +33,7 @@ app.use("/api/shirt", shirtRouter, handler);
 app.use("/api/stock", stockRouter, handler);
 app.use("/api/customer", customerRouter, handler);
 app.use("/api/sale", saleRouter, handler);
+app.use("/api/qr", qrRouter, handler);
 
 import { PORT, TEST_URL, ENV } from "./config";
 

@@ -32,7 +32,6 @@ const stockSchema = new mongoose.Schema(
           url: { type: String },
         },
       ],
-      default: [],
     },
     status: {
       type: String,

@@ -18,7 +18,6 @@ export const insert = async (body: any) => {
   const shirt = new Shirt({
     name: body.details.name,
     description: body.details.description,
-    imageUrl: body.details.imageUrl || "https://example.com/default.jpg",
     tier: body.details.tier,
     media: body.details.media,
     price: body.details.price,
@@ -51,7 +50,6 @@ export const insertMany = async (items: any) => {
       shirts.push({
         name: item.details.name,
         description: item.details.description,
-        imageUrl: item.details.imageUrl || "https://example.com/default.jpg",
         tier: item.details.tier,
         media: item.details.media,
         price: item.details.price,

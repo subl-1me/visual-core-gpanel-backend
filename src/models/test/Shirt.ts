@@ -3,10 +3,14 @@ export default interface Shirt {
   id: string;
   name: string;
   description: string;
-  coverImageUrl: string;
   identificator: string;
   tier: "SEASON" | "DROP" | "CUSTOM" | "UNKNOWN" | "";
-  media: string[];
+  media: Media[];
   colors: string[];
   price: number;
+}
+
+export interface Media {
+  url: string;
+  public_id: string;
 }
