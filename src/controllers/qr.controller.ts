@@ -22,10 +22,13 @@ export const getQr = async (
       throw new Error("Shirt not found");
     }
 
-    const textPayload = JSON.stringify(shirtData);
-    const qrBuffer = await qrService.generateQr(textPayload);
-    res.set("Content-Type", "image/png");
-    res.send(qrBuffer);
+    const textPayload = JSON.stringify({
+      identificator: shirtData.identificator,
+      url: `http://localhost:4200/shirt-visualization/${shirtData.identificator}`,
+    });
+
+    const qrDataUrl = await qrService.generateQr(textPayload);
+    return res.send({ success: true, response: qrDataUrl });
   } catch (err) {
     next(err);
   }
