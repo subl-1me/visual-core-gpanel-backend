@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import * as qrService from "../services/qr.service";
 import Shirt from "../models/Shirt";
+import { PAGE_URL } from "../config";
 
 export const getQr = async (
   req: Request,
@@ -22,12 +23,9 @@ export const getQr = async (
       throw new Error("Shirt not found");
     }
 
-    const textPayload = JSON.stringify({
-      identificator: shirtData.identificator,
-      url: `http://localhost:4200/shirt-visualization/${shirtData.identificator}`,
-    });
-
-    const qrDataUrl = await qrService.generateQr(textPayload);
+    const qrDataUrl = await qrService.generateQr(
+      `${PAGE_URL}/shirt-visualization/${shirtData.identificator}`
+    );
     return res.send({ success: true, response: qrDataUrl });
   } catch (err) {
     next(err);
